@@ -1,7 +1,9 @@
 import streamlit as st
 import pdfplumber
 
-
+# ==================================================
+# ROLE PREDICTION FUNCTION
+# ==================================================
 
 def predict_role(text):
 
@@ -47,7 +49,9 @@ def predict_role(text):
         return "Software Developer"
 
 
-
+# ==================================================
+# PAGE CONFIG
+# ==================================================
 
 st.set_page_config(
     page_title="AI Resume Analyzer",
@@ -55,19 +59,38 @@ st.set_page_config(
     layout="wide"
 )
 
-
+# ==================================================
+# HEADER
+# ==================================================
 
 st.title("📄 AI Resume Analyzer")
-st.write("Upload your resume and get ATS insights, skill analysis, and career recommendations.")
 
+st.write(
+    "Upload your resume, analyze ATS score, predict career roles, and compare with job descriptions."
+)
 
+# ==================================================
+# FILE UPLOAD
+# ==================================================
 
 uploaded_file = st.file_uploader(
     "Upload Resume (PDF)",
     type=["pdf"]
 )
 
+# ==================================================
+# JOB DESCRIPTION INPUT
+# ==================================================
 
+job_description = st.text_area(
+    "Paste Job Description (Optional)",
+    height=200,
+    placeholder="Paste a job description here to calculate match score..."
+)
+
+# ==================================================
+# SKILLS DATABASE
+# ==================================================
 
 skills_db = [
     "python",
@@ -96,6 +119,9 @@ skills_db = [
     "aws"
 ]
 
+# ==================================================
+# MAIN LOGIC
+# ==================================================
 
 if uploaded_file is not None:
 
@@ -114,6 +140,9 @@ if uploaded_file is not None:
 
     st.success("✅ Resume Uploaded Successfully")
 
+    # ==================================================
+    # SKILLS DETECTED
+    # ==================================================
 
     found_skills = []
 
@@ -129,6 +158,9 @@ if uploaded_file is not None:
         if skill not in found_skills:
             missing_skills.append(skill)
 
+    # ==================================================
+    # ATS SCORE
+    # ==================================================
 
     ats_score = int(
         (len(found_skills) / len(skills_db)) * 100
@@ -143,6 +175,10 @@ if uploaded_file is not None:
 
     st.progress(ats_score)
 
+    # ==================================================
+    # ROLE PREDICTION
+    # ==================================================
+
     st.subheader("🎯 Predicted Career Role")
 
     predicted_role = predict_role(text)
@@ -151,6 +187,83 @@ if uploaded_file is not None:
         f"Recommended Role: {predicted_role}"
     )
 
+    # ==================================================
+    # JOB DESCRIPTION MATCHING
+    # ==================================================
+
+    if job_description.strip():
+
+        st.subheader("🤝 Resume vs Job Description Match")
+
+        jd_text = job_description.lower()
+
+        jd_skills = []
+
+        for skill in skills_db:
+
+            if skill in jd_text:
+                jd_skills.append(skill)
+
+        matching_skills = []
+
+        for skill in jd_skills:
+
+            if skill in found_skills:
+                matching_skills.append(skill)
+
+        missing_jd_skills = []
+
+        for skill in jd_skills:
+
+            if skill not in found_skills:
+                missing_jd_skills.append(skill)
+
+        if len(jd_skills) > 0:
+
+            match_score = int(
+                (len(matching_skills) / len(jd_skills)) * 100
+            )
+
+        else:
+
+            match_score = 0
+
+        st.metric(
+            "Match Score",
+            f"{match_score}%"
+        )
+
+        st.progress(match_score)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            st.subheader("✅ Matching Skills")
+
+            if matching_skills:
+
+                for skill in matching_skills:
+                    st.success(skill.title())
+
+            else:
+                st.warning("No matching skills found")
+
+        with col2:
+
+            st.subheader("❌ Missing Job Skills")
+
+            if missing_jd_skills:
+
+                for skill in missing_jd_skills:
+                    st.error(skill.title())
+
+            else:
+                st.success("No missing skills")
+
+    # ==================================================
+    # SKILLS DETECTED
+    # ==================================================
 
     st.subheader("🛠 Skills Detected")
 
@@ -163,6 +276,9 @@ if uploaded_file is not None:
 
         st.warning("No skills detected.")
 
+    # ==================================================
+    # MISSING SKILLS
+    # ==================================================
 
     st.subheader("❌ Missing Skills")
 
@@ -170,6 +286,9 @@ if uploaded_file is not None:
 
         st.warning(skill.title())
 
+    # ==================================================
+    # RESUME ANALYSIS
+    # ==================================================
 
     st.subheader("🔍 Resume Analysis")
 
@@ -207,46 +326,40 @@ if uploaded_file is not None:
     else:
         st.error("❌ Internship experience not found")
 
+    # ==================================================
+    # RECOMMENDATIONS
+    # ==================================================
 
     st.subheader("💡 Personalized Suggestions")
 
     suggestions = []
 
     if not github_found:
-        suggestions.append(
-            "Add your GitHub profile link."
-        )
+        suggestions.append("Add your GitHub profile link.")
 
     if not linkedin_found:
-        suggestions.append(
-            "Add your LinkedIn profile link."
-        )
+        suggestions.append("Add your LinkedIn profile link.")
 
     if not internship_found:
-        suggestions.append(
-            "Include internship experience if available."
-        )
+        suggestions.append("Include internship experience if available.")
 
     if ats_score < 60:
-        suggestions.append(
-            "Add more relevant technical skills."
-        )
+        suggestions.append("Add more relevant technical skills.")
 
     if len(found_skills) < 8:
-        suggestions.append(
-            "Expand your technical skill set."
-        )
+        suggestions.append("Expand your technical skill set.")
 
     if not suggestions:
-
         suggestions.append(
             "Great resume! Continue adding impactful projects and achievements."
         )
 
     for suggestion in suggestions:
-
         st.info(suggestion)
 
+    # ==================================================
+    # SUMMARY
+    # ==================================================
 
     st.subheader("📊 Resume Summary")
 
@@ -270,6 +383,9 @@ if uploaded_file is not None:
             predicted_role
         )
 
+    # ==================================================
+    # RESUME PREVIEW
+    # ==================================================
 
     st.subheader("📄 Resume Preview")
 
@@ -278,6 +394,10 @@ if uploaded_file is not None:
         text,
         height=300
     )
+
+# ==================================================
+# FOOTER
+# ==================================================
 
 st.markdown("---")
 
