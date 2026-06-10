@@ -1,10 +1,6 @@
 import streamlit as st
 import pdfplumber
 
-# ==================================================
-# ROLE PREDICTION FUNCTION
-# ==================================================
-
 def predict_role(text):
 
     text = text.lower()
@@ -49,19 +45,114 @@ def predict_role(text):
         return "Software Developer"
 
 
-# ==================================================
-# PAGE CONFIG
-# ==================================================
-
 st.set_page_config(
     page_title="AI Resume Analyzer",
     page_icon="📄",
     layout="wide"
 )
 
-# ==================================================
-# HEADER
-# ==================================================
+with st.sidebar:
+
+    st.title("📄 Project Overview")
+
+    st.info(
+        """
+AI Resume Analyzer is an NLP-powered application that analyzes resumes and provides:
+
+✅ ATS Score
+
+✅ Skill Detection
+
+✅ Career Role Prediction
+
+✅ Resume Analysis
+
+✅ Job Description Matching
+
+✅ Personalized Suggestions
+"""
+    )
+
+    st.markdown("---")
+
+    st.subheader("🛠 Tech Stack")
+
+    st.success(
+        """
+Python
+
+Streamlit
+
+PDFPlumber
+
+NLP Concepts
+
+Git & GitHub
+"""
+    )
+
+    st.markdown("---")
+
+    st.subheader("📊 Features")
+
+    st.write(
+        """
+• Resume PDF Upload
+
+• Text Extraction
+
+• ATS Score Analysis
+
+• Skills Detection
+
+• Missing Skills Detection
+
+• Career Role Prediction
+
+• Job Description Matching
+
+• Resume Recommendations
+"""
+    )
+
+    st.markdown("---")
+
+    st.subheader("👩‍💻 Developer")
+
+    st.write("Harsha Soni")
+
+    st.caption("Computer Science Engineering Student")
+
+    st.markdown("---")
+
+    st.subheader("🔗 Project Links")
+
+    st.markdown(
+        "[🌐 Live App](https://ai-resume-analyzer-58.streamlit.app/)"
+    )
+
+    st.markdown(
+        "[💻 GitHub Repository](https://github.com/Harsha-Soni/ai-resume-analyzer.git)"
+    )
+
+    st.markdown("---")
+
+    st.subheader("📈 Project Status")
+
+    st.metric(
+        "Version",
+        "2.0"
+    )
+
+    st.metric(
+        "Modules",
+        "9"
+    )
+
+    st.metric(
+        "Deployment",
+        "Ready"
+    )
 
 st.title("📄 AI Resume Analyzer")
 
@@ -69,28 +160,16 @@ st.write(
     "Upload your resume, analyze ATS score, predict career roles, and compare with job descriptions."
 )
 
-# ==================================================
-# FILE UPLOAD
-# ==================================================
-
 uploaded_file = st.file_uploader(
     "Upload Resume (PDF)",
     type=["pdf"]
 )
-
-# ==================================================
-# JOB DESCRIPTION INPUT
-# ==================================================
 
 job_description = st.text_area(
     "Paste Job Description (Optional)",
     height=200,
     placeholder="Paste a job description here to calculate match score..."
 )
-
-# ==================================================
-# SKILLS DATABASE
-# ==================================================
 
 skills_db = [
     "python",
@@ -119,10 +198,6 @@ skills_db = [
     "aws"
 ]
 
-# ==================================================
-# MAIN LOGIC
-# ==================================================
-
 if uploaded_file is not None:
 
     text = ""
@@ -140,10 +215,6 @@ if uploaded_file is not None:
 
     st.success("✅ Resume Uploaded Successfully")
 
-    # ==================================================
-    # SKILLS DETECTED
-    # ==================================================
-
     found_skills = []
 
     for skill in skills_db:
@@ -158,9 +229,6 @@ if uploaded_file is not None:
         if skill not in found_skills:
             missing_skills.append(skill)
 
-    # ==================================================
-    # ATS SCORE
-    # ==================================================
 
     ats_score = int(
         (len(found_skills) / len(skills_db)) * 100
@@ -175,10 +243,6 @@ if uploaded_file is not None:
 
     st.progress(ats_score)
 
-    # ==================================================
-    # ROLE PREDICTION
-    # ==================================================
-
     st.subheader("🎯 Predicted Career Role")
 
     predicted_role = predict_role(text)
@@ -186,10 +250,6 @@ if uploaded_file is not None:
     st.success(
         f"Recommended Role: {predicted_role}"
     )
-
-    # ==================================================
-    # JOB DESCRIPTION MATCHING
-    # ==================================================
 
     if job_description.strip():
 
@@ -261,10 +321,7 @@ if uploaded_file is not None:
             else:
                 st.success("No missing skills")
 
-    # ==================================================
-    # SKILLS DETECTED
-    # ==================================================
-
+    
     st.subheader("🛠 Skills Detected")
 
     if found_skills:
@@ -276,20 +333,14 @@ if uploaded_file is not None:
 
         st.warning("No skills detected.")
 
-    # ==================================================
-    # MISSING SKILLS
-    # ==================================================
-
+    
     st.subheader("❌ Missing Skills")
 
     for skill in missing_skills[:8]:
 
         st.warning(skill.title())
 
-    # ==================================================
-    # RESUME ANALYSIS
-    # ==================================================
-
+    
     st.subheader("🔍 Resume Analysis")
 
     github_found = "github" in text_lower
@@ -326,10 +377,7 @@ if uploaded_file is not None:
     else:
         st.error("❌ Internship experience not found")
 
-    # ==================================================
-    # RECOMMENDATIONS
-    # ==================================================
-
+    
     st.subheader("💡 Personalized Suggestions")
 
     suggestions = []
@@ -357,10 +405,7 @@ if uploaded_file is not None:
     for suggestion in suggestions:
         st.info(suggestion)
 
-    # ==================================================
-    # SUMMARY
-    # ==================================================
-
+    
     st.subheader("📊 Resume Summary")
 
     col1, col2, col3 = st.columns(3)
@@ -383,10 +428,6 @@ if uploaded_file is not None:
             predicted_role
         )
 
-    # ==================================================
-    # RESUME PREVIEW
-    # ==================================================
-
     st.subheader("📄 Resume Preview")
 
     st.text_area(
@@ -394,10 +435,6 @@ if uploaded_file is not None:
         text,
         height=300
     )
-
-# ==================================================
-# FOOTER
-# ==================================================
 
 st.markdown("---")
 
