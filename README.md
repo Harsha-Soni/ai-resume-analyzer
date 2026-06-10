@@ -11,6 +11,7 @@ An NLP-powered resume analysis application built using Python and Streamlit.
 - Missing Skills Analysis
 - Career Role Prediction
 - Personalized Suggestions
+- Job Description Matching
 
 # Tech Stack
 
